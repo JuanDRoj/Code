@@ -1,0 +1,21 @@
+{% load static %}
+
+<link rel="stylesheet" href='{% static "styles/basestyles.css"%}'></link>
+<a href="..\tasks">
+<img src='{% static "imgs/zeply_logo.png"%}' alt="Girl in a jacket" width="165" height="71">
+</a>    
+
+      <input type="checkbox" id="active">
+      <label for="active" class="menu-btn"><span></span></label>
+      <label for="active" class="close"></label>
+      <div class="wrapper">
+        <ul>
+  <li><a href="generate">Generate</a></li>
+  <li><a href="list">List</a></li>
+  <li><a href="retrieve">Retrieve</a></li>
+  <li><a href="logout">LogOut</a></li>
+  </ul>
+  </div>
+
+  {% block content %}
+  {% endblock %}

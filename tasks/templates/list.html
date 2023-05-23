@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<link rel="stylesheet" href='{% static "styles/list-htmx.css"%}'></link>
+  <div class="content">
+        <div class="title">
+  Address List - {{user_name}}</div>
+
+  <table>
+      <thead>
+        <tr>
+          <th>id</th>
+          <th>Address</th>
+          <th>Cryptocurrency</th>
+          <th>Validation</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in address_data %}
+          <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.address}}</td>
+            <td>{{ row.type }}</td>
+            <td><a href='https://www.blockchain.com/explorer/addresses/{{ row.type }}/{{ row.address }}' target="_blank">https://www.blockchain.com</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </div>
+
+  </body>
+  {% endblock %}

@@ -1,0 +1,92 @@
+
+h1{
+  font-size:50px;
+  line-height:54px;
+  text-align:center;
+  margin:100px auto 60px;
+  max-width:600px
+}
+.content{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    text-align: center;
+    width: 100%;
+    color: #000000;
+  }
+  .content .title{
+    font-size: 40px;
+    font-weight: 700;
+  }
+  .content p{
+    font-size: 35px;
+    font-weight: 600;
+  }
+
+  .box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+  }
+  
+  .box select {
+    background-color: #070707;
+    color: white;
+    padding: 12px;
+    width: 250px;
+    border: none;
+    font-size: 20px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    -webkit-appearance: button;
+    appearance: button;
+    outline: none;
+
+  }
+
+  
+  .box select option {
+    padding: 30px;
+  }
+
+  button {
+    display: block;
+    border-radius: 20px;
+    border: 1px solid #4834ec;
+    background-color: #4834ec;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 45px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10%;
+  }
+
+  button:active {
+    transform: scale(0.95);
+  }
+  
+  button:focus {
+    outline: none;
+  }
+  
+  button.ghost {
+    background-color: transparent;
+    border-color: #FFFFFF;
+  }
+
+
+
+  
+
+
+
+ 
+

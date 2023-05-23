@@ -1,0 +1,22 @@
+{% load static %}
+<link rel="stylesheet" href='{% static "styles/home-htmx.css"%}'></link>
+
+
+<!-- Developed by http://grohit.com/ -->
+<div>WELLCOME!!</div>
+<p data-item='{{user_name}}'>{{user_name}}</p>
+
+<section>
+  <nav>
+    <ul class="menuItems">
+      <li><a href='generate' data-item='Generate'>Generate</a></li>
+      <li><a href='list' data-item='List'>List</a></li>
+      <li><a href='retrieve' data-item='Retrieve'>Retrieve</a></li>
+      <li><a href='logout' data-item='LogOut'>LogOut</a></li>
+    </ul>
+  </nav>
+
+</section>
+<img src='{% static "imgs/zeply_logo.png"%}' alt="Girl in a jacket" width="100" height="45">
+
+

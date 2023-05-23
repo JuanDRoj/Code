@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href='{% static "styles/retrieve-htmx.css"%}'></link>
+  <div class="content">
+        <div class="title">
+  {{user_name}}! Search Adress by ID: </div>
+  
+  <div class="form__group">
+      <form action="retrieve" method="POST">
+      <input type="text" class="form__input" id="name" name="id" placeholder="ID" required="" />
+      <label for="name" class="form__label">ID</label>
+
+      <button>Search Address</button>
+</form>
+
+{% if address_data %}
+
+      <h1 class="message" style="text-align: center; margin: 2% 15%;">Your {{ address_data.type }} Address is {{ address_data.address }}, please validate in
+            <a href='https://www.blockchain.com/explorer/addresses/{{ address_data.type }}/{{ address_data.address }}' target="_blank">https://www.blockchain.com</a>
+      </h1>
+
+{% endif %}
+
+    </div>
+  </div>
+  </body>
+  {% endblock %}

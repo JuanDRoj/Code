@@ -1,0 +1,31 @@
+
+  .content{
+      position: absolute;
+      top: 35%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      text-align: center;
+      width: 100%;
+      color: #000000;
+    }
+    .content .title{
+      font-size: 40px;
+      font-weight: 700;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 80%;
+        margin: auto;
+      }
+      
+      th, td {
+        border: 1px solid #000000;
+        padding: 10px;
+        text-align: center;
+      }
+      
+      th {
+        background-color: #7563f8;
+      }
