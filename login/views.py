@@ -15,7 +15,6 @@ def submit_login(request):
     email=request.POST.get('email')
     password=request.POST.get('password')
     username = User.objects.get(email=email.lower()).username
-    print(username)
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
