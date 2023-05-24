@@ -11,7 +11,7 @@ def login(request):
 
 @csrf_exempt 
 def submit_login(request):
-
+    """User Authentication"""
     email=request.POST.get('email')
     password=request.POST.get('password')
     username = User.objects.get(email=email.lower()).username
@@ -28,7 +28,7 @@ def submit_login(request):
 
 @csrf_exempt 
 def submit_register(request):
-
+    """User Registration"""
     name=request.POST.get('name')
     email=request.POST.get('email')
     password=request.POST.get('password')
