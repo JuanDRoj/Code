@@ -5,9 +5,10 @@
 {% block content %}
 <link rel="stylesheet" href='{% static "styles/list-htmx.css"%}'></link>
   <div class="content">
-        <div class="title">
-  Address List - {{user_name}}</div>
-
+        
+  {% if address_data %}
+  <div class="title">
+    Address List - {{user_name}}</div>
   <table>
       <thead>
         <tr>
@@ -29,7 +30,24 @@
       </tbody>
     </table>
 
+    <h3>Filter: </h3>
+  <div class="box">
+    <select id="selection" name="crypto_type">
+      <option value="">ALL</option>
+      <option value="BTC">BTC</option>
+      <option value="ETH">ETH</option>
+    </select>
+
+  </div>
+
+  {% else %}
+
+  <div class="title">
+    {{user_name}}!! You have not generated any addresses yet</div>
+  {% endif %}
+
   </div>
 
   </body>
+  <script src='{% static "js/list.js"%}'></script>
   {% endblock %}

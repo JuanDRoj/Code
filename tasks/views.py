@@ -4,66 +4,94 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
-from .models import PrivateKeys,AddressData
+from .models import PrivateSeeds,AddressData
 
+import mnemonic
 import bitcoin
 from eth_utils import keccak, to_checksum_address
-
+from cryptography.fernet import Fernet
 
 
 # Create your views here.
 
 #FUNCTIONS
+def generate_seed():
+    """Generates a seed."""
+    seed = mnemonic.Mnemonic(language='english').generate(strength=128)
+    seed=seed.encode('utf-8')
+    return seed
 
 
-
-
-def generate_btc_address():
-    """Generate a new BTC address"""
-    private_key = bitcoin.random_key()
-    public_key = bitcoin.privkey_to_pubkey(private_key)
-    btc_address = bitcoin.pubkey_to_address(public_key)
-    
-    return btc_address
-
-
-def validate_private_key(user_id,crypto_type):
-    """Validate the private key"""
-    user_exist=PrivateKeys.objects.filter(user_id=user_id).filter(type=crypto_type)
-    
-    if crypto_type=='BTC':
-        private_key = bitcoin.random_key()
-    if crypto_type=='ETH':
-        private_key = keccak(text='your_secret_key').hex()
-
-    if(user_exist):
-        user_exist.update(
-            private_key=private_key
-        )
-        #private_key=user_exist.values()[0]['private_key']
+def btc_address(seed,existing_addresses):
+    """Generates a btc address from single seed"""
+    master_private_key = bitcoin.bip32_master_key(seed)
+    i=0
+    if existing_addresses:
+        address=existing_addresses[0]
+        while address in existing_addresses:
+            child_private_key = bitcoin.bip32_ckd(master_private_key, i)
+            child_public_key = bitcoin.bip32_extract_key(child_private_key)
+            address = bitcoin.pubkey_to_address(child_public_key)
+            i=i+1
     else:
-        
-        PrivateKeys.objects.create(
-            private_key=private_key,
-            type=crypto_type,
-            user_id=user_id
-        )
+        child_private_key = bitcoin.bip32_ckd(master_private_key, 0)
+        child_public_key = bitcoin.bip32_extract_key(child_private_key)
+        address = bitcoin.pubkey_to_address(child_public_key)
 
-    return private_key
+    return address
 
-
-def generate_address(crypto_type,private_key,user_id):
-
-    """Generate the addres depending on crypto_type"""
-
-    address=None
-
-    if crypto_type=='BTC':
-            public_key = bitcoin.privkey_to_pubkey(private_key)
-            address = bitcoin.pubkey_to_address(public_key)
-    if crypto_type=='ETH':
+def eth_addresses(seed,existing_addresses):
+    """Generates an eth address from single seed"""
+    seed_hash = keccak(seed)
+    private_key = seed_hash.hex()
+    if existing_addresses:
+        address=existing_addresses[0]
+        while address in existing_addresses:
             public_key = keccak(bytes.fromhex(private_key)[1:]).hex()
             address = to_checksum_address('0x' + public_key[-40:])
+            private_key = hex(int(private_key, 16) + 1)[2:]
+    else:
+        public_key = keccak(bytes.fromhex(private_key)[1:]).hex()
+        address = to_checksum_address('0x' + public_key[-40:])
+
+
+    return address  
+
+
+def validate_seed(user_id):
+    """Validate seed"""
+    user_exist=PrivateSeeds.objects.filter(user_id=user_id)
+    
+    if(user_exist):
+        user_data=user_exist.values()[0]
+        key=user_data['seed_key'].encode()
+        crypter=Fernet(key)
+        seed=crypter.decrypt(user_data['seed'].encode())
+    else:
+        key=Fernet.generate_key()
+        crypter=Fernet(key)
+        seed=generate_seed()
+        encrypted_seed=str(crypter.encrypt(seed),'utf8')
+        str_key=str(key,'utf8')
+        PrivateSeeds.objects.create(
+            seed=encrypted_seed,
+            user_id=user_id,
+            seed_key=str_key
+        )
+
+    return seed
+
+
+def generate_address(crypto_type,seed,user_id):
+
+    """Generate the addres depending on crypto_type"""
+    address=None
+    addresses=[row['address'] for row in AddressData.objects.filter(user_id=user_id).filter(type=crypto_type).values()]
+    
+    if crypto_type=='BTC':
+            address = btc_address(seed,addresses)
+    if crypto_type=='ETH':
+            address = eth_addresses(seed,addresses)
 
     AddressData.objects.create(
             address=address,
@@ -94,13 +122,10 @@ def generate_screen(request):
 
         crypto_selection=request.POST.get('crypto_type')
        
-        private_key=validate_private_key(user_id,crypto_selection)
+        seed=validate_seed(user_id)
 
-        
-        
-        if(private_key):
-            address=generate_address(crypto_selection,private_key,user_id)
-
+        if(seed):
+            address=generate_address(crypto_selection,seed,user_id)
             if(address):
                 return redirect('tasks:list')
          
